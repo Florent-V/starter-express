@@ -1,0 +1,19 @@
+# Utiliser une image de base Node.js
+FROM node:20
+
+# Créer un répertoire de travail
+WORKDIR /usr/src/app
+
+# Copier package.json et package-lock.json
+COPY package*.json ./
+
+# Installer les dépendances
+ARG NODE_ENV
+RUN npm install
+
+# Copier le reste de l'application
+COPY . .
+
+
+# Lancer l'application
+CMD ["npm", "run", ${START_METHOD}]

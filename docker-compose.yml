@@ -1,49 +1,62 @@
 services:
-  app:
+#########################################
+#   Setup server container
+#########################################
+  api:
+    container_name: ${PROJECT_NAME}-app-${ENV_NAME}
+    image: ${PROJECT_NAME}-node-mysql-app
     build:
       context: ./back
       dockerfile: DockerFile
       args:
         NODE_ENV: ${NODE_ENV}
-    container_name: ${PROJECT_NAME}-app-${ENV_NAME}
-    environment:
-      SERVICE_NAME: app
-      DB_HOST: ${MYSQL_DB_HOST}
-      DB_NAME: ${MYSQL_DB_NAME}
-      DB_USER: ${MYSQL_DB_USER}
-      DB_PWD: ${MYSQL_DB_PWD}
-      START_METHOD: ${START_METHOD}
     ports:
-      - '${APP_HOST_PORT}:${APP_CONTAINER_PORT}'
+      - "${API_PORT}:3000"
+    environment:
+      - SERVICE_NAME=app
+      - NODE_ENV=${NODE_ENV}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - START_METHOD=${START_METHOD}
     networks:
-      - mon-projet-network
+      - internal
     depends_on:
-      - mysql
-
-  mysql:
-    image: mysql:8.0
-    container_name: ${MYSQL_DB_HOST}
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_DB_PWD}
-      MYSQL_DATABASE: ${MYSQL_DB_NAME}
-      MYSQL_USER: ${MYSQL_DB_USER}
-      MYSQL_PASSWORD: ${MYSQL_DB_PWD}
-    ports:
-      - '${MYSQL_DB_HOST_PORT}:${MYSQL_DB_CONTAINER_PORT}'
+      db:
+        condition: service_started
+        restart: true
     volumes:
-      - mysql-data:/var/lib/mysql
-    networks:
-      - mon-projet-network
-  
-  adminer:
-    image: adminer
-    container_name: adminer_container
+      - ./back:/usr/src/app
+      -  api_node_modules:/usr/src/app/node_modules
+
+
+#########################################
+#   Setup MYSQL container
+#########################################
+  db:
+    container_name: ${DB_HOST}
+    image: mysql:8.0
+    restart: unless-stopped
     ports:
-      - "8081:8080" 
+      - '${DB_PORT}:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - db-config:/etc/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+    networks:
+      - internal
 
 networks:
-  mon-projet-network:
+  internal:
     driver: bridge
 
 volumes:
-  mysql-data:
+  mysql_data:
+  db-config:
+  api_node_modules:

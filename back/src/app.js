@@ -7,30 +7,32 @@ const port = 3000;
 
 // Configuration de la base de données
 const dbConfig = {
-  host: process.env.MYSQL_DB_HOST,
-  user: process.env.MYSQL_DB_USER,
-  password: process.env.MYSQL_DB_PWD,
-  database: process.env.MYSQL_DB_NAME,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 };
 
-async function testConnection() {
+// Fonction pour tester la connexion à la base de données
+async function testDbConnection() {
   try {
     const connection = await mysql.createConnection(dbConfig);
-    console.log('Connecté à la base de données MySQL.');
+    await connection.query('SELECT 1');
+    console.log('Connexion à la base de données réussie');
     await connection.end();
-  } catch (err) {
-    console.error('Erreur de connexion à la base de données:', err);
+  } catch (error) {
+    console.error('Erreur de connexion à la base de données:', error);
+    process.exit(1);
   }
 }
 
-testConnection();
-
-// Endpoint simple
-app.get('/', (req, res) => {
-  res.send('Hello, world!');
+// Route de test
+app.get('/', async (req, res) => {
+  await testDbConnection();
+  res.json({ message: 'API fonctionnelle' });
 });
 
-// Démarrer le serveur
+
 app.listen(port, () => {
-  console.log(`Serveur Node.js démarré sur http://localhost:${port}`);
+  console.log(`Serveur démarré sur le port ${port}`);
 });

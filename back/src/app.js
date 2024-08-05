@@ -1,34 +1,20 @@
-const express = require('express');
-const mysql = require('mysql2/promise');
-require('dotenv').config();
+import express from 'express';
+import { testNativeDbConnection, testSequelizeDbConnection } from './database/connect.js';
 
 const app = express();
 const port = 3000;
 
-// Configuration de la base de données
-const dbConfig = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-};
-
-// Fonction pour tester la connexion à la base de données
-async function testDbConnection() {
-  try {
-    const connection = await mysql.createConnection(dbConfig);
-    await connection.query('SELECT 1');
-    console.log('Connexion à la base de données réussie');
-    await connection.end();
-  } catch (error) {
-    console.error('Erreur de connexion à la base de données:', error);
-    process.exit(1);
-  }
-}
 
 // Route de test
-app.get('/', async (req, res) => {
-  await testDbConnection();
+app.get('/test-native-connexion', async (req, res) => {
+  await testNativeDbConnection();
+
+  res.json({ message: 'API fonctionnelle' });
+});
+
+app.get('/test-sequelize-connexion', async (req, res) => {
+  await testSequelizeDbConnection();
+
   res.json({ message: 'API fonctionnelle' });
 });
 

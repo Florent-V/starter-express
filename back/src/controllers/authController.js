@@ -1,13 +1,11 @@
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import config from '../config/config.js';
 import User from '../models/userModel.js';
 import Role from '../models/roleModel.js';
+import { hashPassword, comparePasswords, generateToken, verifyToken, checkAccess, getAuthorities } from '../utils/security.js';
 
 export const signup = async (req, res) => {
   try {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    const hashedPassword = await hashPassword(req.body.password);
+
     const user = await User.create({ 
       ...req.body,
       password: hashedPassword
@@ -31,20 +29,13 @@ export const signin = async (req, res) => {
 
     if (!user) return res.status(400).json({ message: 'Invalid credentials' });
 
-    const validPassword = await bcrypt.compare(password, user.password);
+    const validPassword = await comparePasswords(password, user.password);
     if (!validPassword) return res.status(400).json({ message: 'Invalid credentials' });
 
-    const token = jwt.sign(
-      { id: user.id, username: user.username },
-      config.jwtSecret,
-      { expiresIn: '1h' }
-    );
+    const token = generateToken(user.id, user.username);
 
-    const authorities = [];
-    const roles = await user.getRoles();
-    for (let i = 0; i < roles.length; i++) {
-      authorities.push(`ROLE_${roles[i].name.toUpperCase()}`);
-    }
+    
+    const authorities = await getAuthorities(user);
 
     req.session.token = token;
 

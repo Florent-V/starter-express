@@ -1,16 +1,26 @@
 {
-  "name": "back",
+  "name": "node-express-mysql-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Node Express MySQL API",
+  "main": "app.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/app.js",
     "dev": "nodemon src/app.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "node",
+    "express",
+    "mysql",
+    "api",
+    "rest",
+    "jwt",
+    "authentication",
+    "authorization",
+    "sequelize"
+  ],
+  "author": "Florent Vasseur",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

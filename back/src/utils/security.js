@@ -36,3 +36,5 @@ export const getAuthorities = async (user) => {
   return authorities;
 };
 
+
+

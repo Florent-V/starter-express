@@ -50,3 +50,4 @@ export const seedDatabase = async () => {
   //   await sequelize.close();
   // }
 };
+

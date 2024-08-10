@@ -19,17 +19,17 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
+      - JWT_SECRET=${JWT_SECRET}
+      - COOKIE_SECRET=${COOKIE_SECRET}
       - START_METHOD=${START_METHOD}
     networks:
       - internal
     depends_on:
       db:
-        condition: service_started
-        restart: true
+        condition: service_healthy
     volumes:
       - ./back:/usr/src/app
       -  api_node_modules:/usr/src/app/node_modules
-
 
 #########################################
 #   Setup MYSQL container
@@ -49,6 +49,12 @@ services:
       - mysql_data:/var/lib/mysql
       - db-config:/etc/mysql
       - ./sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - internal
 

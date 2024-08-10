@@ -1,6 +1,6 @@
 import express from 'express';
 import { testNativeDbConnection, testSequelizeDbConnection } from '../database/test.js';
-import { resetDatabase } from '../models/index.js';
+import { resetDatabase } from '../database/utils.js';
 const router = express.Router();
 
 router.get('/', (req, res) => {

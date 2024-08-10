@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieSession from 'cookie-session';
 
-import { synchroniseDatabase } from './models/index.js';
+import { synchroniseDatabase } from './database/utils.js';
 
 import testRoute from './routes/testRoute.js';
 import authRoute from './routes/authRoute.js';

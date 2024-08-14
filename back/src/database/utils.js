@@ -3,11 +3,11 @@ import { defineAssociations } from '../models/relation.js';
 import { seedDatabase } from '../database/init.js';
 
 
-export const synchroniseDatabase = async () => {
+export const synchroniseDatabase = async (db, option) => {
   defineAssociations();
   try {
-    await sequelize.sync({ alter: true });
-    console.log('Les tables ont été synchronisées.');
+    await db.sequelize.sync({ [option]: true });
+    console.log(`Database synced with ${option} option.`);
   } catch (error) {
     console.error('Erreur lors de la synchronisation des tables:', error);
     process.exit(1);

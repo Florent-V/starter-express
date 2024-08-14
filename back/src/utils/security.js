@@ -36,5 +36,6 @@ export const getAuthorities = async (user) => {
   return authorities;
 };
 
-
-
+export const decode = (token) => {
+  return jwt.decode(token);
+}

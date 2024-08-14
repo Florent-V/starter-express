@@ -46,8 +46,4 @@ export const seedDatabase = async () => {
     console.error('Erreur lors de la création des données de test :', error);
     process.exit(1);
   }
-  // } finally {
-  //   await sequelize.close();
-  // }
 };
-

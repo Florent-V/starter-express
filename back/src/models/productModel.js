@@ -2,7 +2,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/connect.js';
 
-const Product = sequelize.define('products', {
+const Product = sequelize.define('Product', {
   name: {
     type: DataTypes.STRING,
   },
@@ -14,6 +14,10 @@ const Product = sequelize.define('products', {
   },
   image: {
     type: DataTypes.STRING,
+  },
+  available: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
   quantity: {
     type: DataTypes.INTEGER,
@@ -27,3 +31,4 @@ const Product = sequelize.define('products', {
   }
 );
 
+export default Product;

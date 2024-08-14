@@ -4,10 +4,12 @@ import cors from 'cors';
 import cookieSession from 'cookie-session';
 
 import { synchroniseDatabase } from './database/utils.js';
+import { db } from './models/index.js';
 
-import testRoute from './routes/testRoute.js';
-import authRoute from './routes/authRoute.js';
-import userRoute from './routes/userRoute.js';
+import testRoutes from './routes/testRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import productRoutes from './routes/productRoutes.js';
 
 dotenv.config();
 
@@ -23,7 +25,6 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-
 // parse requests of content-type - application/json
 app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
@@ -34,20 +35,42 @@ app.use(
     name: `${process.env.PROJECT_NAME}-session`,
     keys: [process.env.COOKIE_SECRET],
     httpOnly: true,
+    sameSite: 'strict'
   })
 );
 
-// Route de test
-app.use('', testRoute);
-// Route d'authentification
-app.use('/api/auth', authRoute);
-// Route user
-app.use('/api/user', userRoute);
+// serve the `backend/public` folder for public resources
+app.use(express.static('public'))
+
+// Test Routes
+app.use('', testRoutes);
+// Auth Routes
+app.use('/api/auth', authRoutes);
+// User Routes
+app.use('/api/user', userRoutes);
+// Tutorial Routes
+app.use('/api/product', productRoutes);
+
+app.use((req, res, next) => {
+  const error = new Error('Page Not Found');
+  error.status = 404;
+  next(error);
+});
+
+// Middleware pour gérer les autres erreurs
+app.use((error, req, res, next) => {
+  res.status(error.status || 500);
+  res.json({
+     error: {
+        message: error.message
+     }
+  });
+});
 
 app.listen(port, async () => {
   console.log(`Serveur démarré sur le port ${port}`);
   try {
-    await synchroniseDatabase();
+    await synchroniseDatabase(db, 'alter');
     console.log('Database connected');
     console.log(`Server is running on port ${port}`);
   } catch (error) {

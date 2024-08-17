@@ -4,6 +4,7 @@ import NotFoundError from '../error/notFoundError.js';
 // Création d'un Product
 export const createProduct = async (req, res, next) => {
   try {
+    req.body.image = req.file ? req.file.filename : "default.jpg";
     const product = await Product.create(req.body);
     res.status(201).json(product);
   } catch (error) {
@@ -36,6 +37,7 @@ export const getProductById = async (req, res, next) => {
 // Mise à jour d'un Product
 export const updateProduct = async (req, res, next) => {
   try {
+    if (req.file) req.body.image = req.file.filename;
     const [updated] = await Product.update(req.body, {
       where: { id: req.params.id }
     });

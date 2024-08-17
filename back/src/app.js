@@ -40,7 +40,7 @@ app.use(
 );
 
 // serve the `backend/public` folder for public resources
-app.use(express.static('public'))
+app.use(express.static('public/uploads'));
 
 // Test Routes
 app.use('', testRoutes);

@@ -15,7 +15,10 @@ export const generateToken = (id, username) => {
   return jwt.sign(
     { id, username },
     config.jwtSecret,
-    { expiresIn: 3600 }
+    { 
+      expiresIn: 3600,
+      algorithm: 'RS256'
+     }
   );
 };
 

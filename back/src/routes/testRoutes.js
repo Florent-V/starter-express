@@ -1,6 +1,5 @@
 import express from 'express';
 import { testNativeDbConnection, testSequelizeDbConnection } from '../database/test.js';
-import { resetDatabase } from '../database/utils.js';
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -21,7 +20,6 @@ router.get('/test-sequelize-connexion', async (req, res) => {
 
 // réinitialize database
 router.get('/reset-database', async (req, res) => {
-  await resetDatabase();
 
   res.json({ message: 'API fonctionnelle' });
 });

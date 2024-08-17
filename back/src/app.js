@@ -3,8 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieSession from 'cookie-session';
 
-import { synchroniseDatabase, resetDatabase } from './database/utils.js';
-import { db } from './models/index.js';
+import initDB from './database/init.js';
 import  { errorHandler, notFound, logError } from './middleware/errorMiddleware.js';
 
 import testRoutes from './routes/testRoutes.js';
@@ -60,9 +59,7 @@ app.use(errorHandler);
 app.listen(port, async () => {
   console.log(`Serveur démarré sur le port ${port}`);
   try {
-    await synchroniseDatabase(db, 'alter');
-    //await resetDatabase();
-    console.log('Database connected');
+    await initDB('alter');
     console.log(`Server is running on port ${port}`);
   } catch (error) {
     console.error('Unable to connect to the database:', error);

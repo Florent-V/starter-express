@@ -1,14 +1,17 @@
-import { db } from './index.js';
+import models from './index.js';
+
+const { role, user } = models;
 
 export const defineAssociations = () => {
-  db.role.belongsToMany(db.user, {
+  role.belongsToMany(user, {
     through: 'user_role',
     foreignKey: 'roleId',
     otherKey: 'userId'
   });
-  db.user.belongsToMany(db.role, {
+  user.belongsToMany(role, {
     through: 'user_role',
     foreignKey: 'userId',
     otherKey: 'roleId'
   });
 };
+

@@ -9,18 +9,16 @@ router.get('/', (req, res) => {
 router.get('/test-native-connexion', async (req, res) => {
   await testNativeDbConnection();
 
-  res.json({ message: 'API fonctionnelle' });
+  res.json({ message: 'Native DB Connection OK' });
 });
 
 router.get('/test-sequelize-connexion', async (req, res) => {
   await testSequelizeDbConnection();
-
-  res.json({ message: 'API fonctionnelle' });
+  res.json({ message: 'Sequelize DB Connection OK' });
 });
 
 // réinitialize database
 router.get('/reset-database', async (req, res) => {
-
   res.json({ message: 'API fonctionnelle' });
 });
 

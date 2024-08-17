@@ -38,42 +38,35 @@
 
 > The project will start locally at localhost:${API_PORT}
 
-
-
-
 ## API Endpoints
 
+**Test**
+- GET /test-native-conexion
+- GET /test-sequelize-conexion
 ---
+**Authentification**
+- POST /signup
+- POST /signin
+- POST /logout
+---
+**User**
+- GET /user
+- GET /user/me
+- GET /user/{:id}
+- PATCH /user/{:id}
+- DELETE /user/{:id}
+- POST /user/{:userId}/role/{:roleId}
+- DELETE /user/{:userId}/role/{:roleId}
+---
+**Product**
+- GET /product
+- POST /product
+- GET /product/{:id}
+- PATCH /product/edit/{:id}
+- POST /product/{:id}
 
-- POST /user/signup
-- POST /user/login
-
-- GET /tutorial/
-- POST /tutorial/new
-- GET /tutorial/{:id}
-- POST /tutorial/edit/{:id}
-- POST /tutorial/delete/{:id}
-
-
-
-### Authentification
-
-- [`POST /user/signup`]Inscription d'un nouvel utilisateur.
-- [`POST /user/login`]( "Go to definition") : Connexion d'un utilisateur existant.
-
-### Tutoriels
-
-- [`GET /tutorial/`] "Go to definition") : Récupère tous les tutoriels.
-- [`POST /tutorial/new`](c "Go to definition") : Crée un nouveau tutoriel.
-- [`GET /tutorial/{:id}`] "Go to definition") : Récupère un tutoriel par ID.
-- [`POST /tutorial/edit/{:id}`] "Go to definition") : Modifie un tutoriel par ID.
-- [`POST /tutorial/delete/{:id}`]( "Go to definition") : Supprime un tutoriel par ID.
-
-
-
-
-
-
+I've made a script to generate a crud for a new entity :
+- `npm run generate-crud -- EntityName`
 
 ## Docker
 
@@ -161,36 +154,6 @@ docker exec -it <container_name_or_id> sh
 mysqldump -u<username> -p<password> <database_name> > /path/to/script.sql
 ```
 
-
-
-
-
-
-
-## Docker
-
-Pour utiliser Docker, suivez les étapes ci-dessous :
-
-1. Démarrez les conteneurs :
-    ```bash
-    docker-compose up --build
-    ```
-
-2. Redémarrez vos conteneurs avec :
-    ```bash
-    docker-compose down
-    docker-compose up --build
-    ```
-
-Lorsque le conteneur MySQL démarrera, il exécutera automatiquement tous les scripts `.sql` présents dans le dossier `/docker-entrypoint-initdb.d` (qui correspond à votre dossier [`sql`](command:_github.copilot.openRelativePath?%5B%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22wsl.localhost%22%2C%22path%22%3A%22%2FUbuntu%2Fhome%2Ffvasseur2%2FPERSO%2Fstarter-express%2Fsql%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%5D "\\wsl.localhost\Ubuntu\home\fvasseur2\PERSO\starter-express\sql") local) lors de la première initialisation de la base de données.
-
-### Points importants à noter :
-
-- Cette méthode n'exécutera les scripts que lors de la première initialisation de la base de données. Si vous modifiez le script SQL et que vous voulez le réexécuter, vous devrez supprimer le volume de données MySQL et le recréer :
-    ```bash
-    docker-compose down -v
-    docker-compose up --build
-    ```
 
 ## Contributing
 

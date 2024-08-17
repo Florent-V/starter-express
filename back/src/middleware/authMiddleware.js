@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { Op } from 'sequelize';
 import config from '../config/config.js';
 import User from '../models/userModel.js';
-import  { checkAccess } from '../utils/security.js';
+import  { checkAccess, authToken } from '../utils/security.js';
 import InvalidTokenError from '../error/invalidTokenError.js';
 import ForbiddenError from '../error/forbiddenError.js';
 import ConflictError from '../error/conflictError.js';
@@ -12,7 +12,7 @@ export const authenticateToken = (req, res, next) => {
   if (!token) throw new InvalidTokenError('Access Denied: No token provided');
 
   try {
-    const verified = jwt.verify(token, config.jwtSecret);
+    const verified = authToken(token);
     req.user = verified;
     next();
   } catch (error) {
@@ -26,7 +26,7 @@ export const verifyToken = (req, res, next) => {
   if (!token) throw new InvalidTokenError('Access Denied: No token provided');
 
   try {
-    jwt.verify(token, config.jwtSecret)
+    authToken(token);
     req.user = verified;
     next();
 

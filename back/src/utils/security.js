@@ -14,7 +14,7 @@ export const comparePasswords = async (password, hashedPassword) => {
 export const generateToken = (id, username) => {
   return jwt.sign(
     { id, username },
-    config.jwtSecret,
+    config.jwtPrivateKey,
     { 
       expiresIn: 3600,
       algorithm: 'RS256'
@@ -22,8 +22,8 @@ export const generateToken = (id, username) => {
   );
 };
 
-export const verifyToken = (token) => {
-  return jwt.verify(token, process.env.JWT_SECRET);
+export const authToken = (token) => {
+  return jwt.verify(token, config.jwtPublicKey);
 };
 
 export const checkAccess = (roles, requiredRoles) => {

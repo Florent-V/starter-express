@@ -1,32 +1,29 @@
 import jwt from 'jsonwebtoken';
+import { Op } from 'sequelize';
 import config from '../config/config.js';
 import User from '../models/userModel.js';
-import { Op } from 'sequelize';
-
+import  { checkAccess } from '../utils/security.js';
+import InvalidTokenError from '../error/invalidTokenError.js';
+import ForbiddenError from '../error/forbiddenError.js';
+import ConflictError from '../error/conflictError.js';
 
 export const authenticateToken = (req, res, next) => {
   const token = req.header('Authorization')?.split(' ')[1];
-  if (!token) return res.status(401).json({ message: 'Access Denied' });
+  if (!token) throw new InvalidTokenError('Access Denied: No token provided');
 
   try {
     const verified = jwt.verify(token, config.jwtSecret);
     req.user = verified;
     next();
-  } catch (err) {
-    res.status(400).json({ message: 'Invalid Token' });
+  } catch (error) {
+    return next({ ...error, stack: error.stack, status: 401 });
   }
 };
 
 export const verifyToken = (req, res, next) => {
-  console.log('verifyToken', req);
-  console.log('verifyToken', req.headers);
   const token = req.session.token;
 
-  if (!token) {
-    return res.status(403).send({
-      message: "No token provided!",
-    });
-  }
+  if (!token) throw new InvalidTokenError('Access Denied: No token provided');
 
   try {
     jwt.verify(token, config.jwtSecret)
@@ -34,7 +31,7 @@ export const verifyToken = (req, res, next) => {
     next();
 
   } catch (error) {
-    res.status(400).json({ message: 'Invalid Token' });
+    return next({ ...err, stack: err.stack, status: 401 });
   }
 };
 
@@ -44,18 +41,12 @@ export const isAdmin = async (req, res, next) => {
     const roles = await user.getRoles();
 
     const access = checkAccess(roles, ['admin']);
-    if (access) {
-      return next();
-    }
+    if (access) return next();
+    
+    throw new ForbiddenError('Require Admin Role!');
 
-    return res.status(403).send({
-      message: "Require Admin Role!",
-    });
   } catch (error) {
-    return res.status(500).send({
-      message: "Unable to validate User role!",
-
-    });
+    return next(error);
   }
 };
 
@@ -65,43 +56,26 @@ export const isModerator = async (req, res, next) => {
     const roles = await user.getRoles();
 
     const access = checkAccess(roles, ['moderator']);
-    if (access) {
-      return next();
-    }
+    if (access) return next();
 
-    return res.status(403).send({
-      message: "Require Moderator Role!",
-    });
+    throw new ForbiddenError('Require Moderator Role!');
   } catch (error) {
-    return res.status(500).send({
-      message: "Unable to validate Moderator role!",
-    });
+    return next(error);
   }
 };
 
 export const isModeratorOrAdmin = async (req, res, next) => {
   try {
-    const user = await User.findByPk(req.user.id);
+    const user = await User.findByPk(req.user.ifd);
     const roles = await user.getRoles();
 
     const access = checkAccess(roles, ['moderator', 'admin']);
-    if (access) {
-      return next();
-    }
+    if (access) return next();
 
-    return res.status(403).send({
-      message: "Require Moderator or Admin Role!",
-    });
+    throw new ForbiddenError('Require Moderator or Admin Role!');
   } catch (error) {
-    return res.status(500).send({
-      message: "Unable to validate Moderator or Admin role!",
-    });
+    return next(error);
   }
-};
-
-const checkAccess = (roles, access) => {
-  console.log('checkAccess', roles, access);
-  return roles.some(role => access.includes(role.name));
 };
 
 export const checkDuplicateUsernameOrEmail = async (req, res, next) => {
@@ -116,19 +90,13 @@ export const checkDuplicateUsernameOrEmail = async (req, res, next) => {
     });
 
     if (user) {
-      return res.status(400).send({
-        field: "email",
-        message: user.username === req.body.username
-          ? "Failed! Username is already in use!"
-          : "Failed! Email is already in use!"
-      });
+      throw new ConflictError(user.username === req.body.username
+        ? "Failed! Username is already in use!"
+        : "Failed! Email is already in use!");
     }
 
     next();
   } catch (error) {
-    return res.status(500).send({
-      message: "Unable to validate Username or Email!",
-      error
-    });
+    return next(error);
   }
 };

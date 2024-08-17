@@ -15,7 +15,7 @@ export const generateToken = (id, username) => {
   return jwt.sign(
     { id, username },
     config.jwtSecret,
-    { expiresIn: '1h' }
+    { expiresIn: 3600 }
   );
 };
 

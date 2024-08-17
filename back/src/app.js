@@ -3,8 +3,9 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieSession from 'cookie-session';
 
-import { synchroniseDatabase } from './database/utils.js';
+import { synchroniseDatabase, resetDatabase } from './database/utils.js';
 import { db } from './models/index.js';
+import  { errorHandler, notFound, logError } from './middleware/errorMiddleware.js';
 
 import testRoutes from './routes/testRoutes.js';
 import authRoutes from './routes/authRoutes.js';
@@ -51,26 +52,16 @@ app.use('/api/user', userRoutes);
 // Tutorial Routes
 app.use('/api/product', productRoutes);
 
-app.use((req, res, next) => {
-  const error = new Error('Page Not Found');
-  error.status = 404;
-  next(error);
-});
-
-// Middleware pour gérer les autres erreurs
-app.use((error, req, res, next) => {
-  res.status(error.status || 500);
-  res.json({
-     error: {
-        message: error.message
-     }
-  });
-});
+//error middleware
+app.use(logError);
+app.use(notFound);
+app.use(errorHandler);
 
 app.listen(port, async () => {
   console.log(`Serveur démarré sur le port ${port}`);
   try {
     await synchroniseDatabase(db, 'alter');
+    //await resetDatabase();
     console.log('Database connected');
     console.log(`Server is running on port ${port}`);
   } catch (error) {

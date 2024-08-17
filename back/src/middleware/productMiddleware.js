@@ -1,9 +1,10 @@
 import { productSchema, updateProductSchema } from "../joiSchema/productJoiSchema.js";
 import _ from 'lodash';
+import BadRequestError from "../error/badRequestError.js";
 
 export const validateProduct = (req, res, next) => {
   const { error } = productSchema.validate(req.body);
-  if (error) return res.status(400).json({ message: error.details[0].message });
+  if (error) throw new BadRequestError(error.details[0].message);
 
   req.body = _.pick(req.body, ['name', 'description', 'price', 'image', 'available', 'quantity', 'releaseDate']);
 
@@ -12,7 +13,7 @@ export const validateProduct = (req, res, next) => {
 
 export const validateUpdateProduct = (req, res, next) => {
   const { error } = updateProductSchema.validate(req.body);
-  if (error) return res.status(400).json({ message: error.details[0].message });
+  if (error) throw new BadRequestError(error.details[0].message);
 
   req.body = _.pick(req.body, ['name', 'description', 'price', 'image', 'available', 'quantity', 'releaseDate']);
 

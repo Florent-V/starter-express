@@ -1,6 +1,6 @@
-import BadRequestError from "./badRequestError.js";
+import UnauthorizedError from "./unauthorizedError.js";
 
-class InvalidCredentialsError extends BadRequestError {
+class InvalidCredentialsError extends UnauthorizedError {
   constructor(message = 'Invalid credentials') {
     super(message);
     this.name = 'InvalidCredentialsError';

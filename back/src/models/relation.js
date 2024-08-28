@@ -1,6 +1,6 @@
 import models from './index.js';
 
-const { role, user } = models;
+const { role, user, product } = models;
 
 export const defineAssociations = () => {
   role.belongsToMany(user, {
@@ -13,5 +13,11 @@ export const defineAssociations = () => {
     foreignKey: 'userId',
     otherKey: 'roleId'
   });
+  product.belongsTo(user, {
+    foreignKey: 'userId',
+    onDelete: 'CASCADE'
+  });
+  user.hasMany(product, {
+    foreignKey: 'userId'
+  });
 };
-

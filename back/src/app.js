@@ -5,6 +5,7 @@ import cookieSession from 'cookie-session';
 
 import initDB from './database/init.js';
 import  { errorHandler, notFound, logError } from './middleware/errorMiddleware.js';
+import { send } from './middleware/sendMiddleware.js';
 
 import testRoutes from './routes/testRoutes.js';
 import authRoutes from './routes/authRoutes.js';
@@ -50,8 +51,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 // Tutorial Routes
 app.use('/api/product', productRoutes);
+// Send middleware
+app.use(send);
 
-//error middleware
+// Error handling middleware
 app.use(logError);
 app.use(notFound);
 app.use(errorHandler);
@@ -59,7 +62,7 @@ app.use(errorHandler);
 app.listen(port, async () => {
   console.log(`Serveur démarré sur le port ${port}`);
   try {
-    await initDB('force');
+    await initDB('alter');
     console.log(`Server is running on port ${port}`);
   } catch (error) {
     console.error('Unable to connect to the database:', error);

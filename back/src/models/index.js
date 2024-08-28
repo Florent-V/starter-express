@@ -6,7 +6,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
 const models = {};
 
 // Fonction pour charger dynamiquement les modèles
@@ -22,7 +21,6 @@ const loadModels = async () => {
     models[modelName] = model.default;
   }
 };
-
 
 await loadModels();
 

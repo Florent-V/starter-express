@@ -18,7 +18,7 @@
 
 ## Configuration
 
-1. Copy the `.env.example` file to `.env` and configure the variables as needed.
+1. Copy the `.env.template` file to `.env` and configure the variables as needed.
 2. Configuration of PRIVATE and PUBLIC key for JWT token :
 - Generate private key :  
 `openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:4096`
@@ -38,6 +38,8 @@
 
 > The project will start locally at localhost:${API_PORT}
 
+> I haven't try to launch the project without docker, but you can try with `npm start` or `npm run dev` if you have a MySQL database running on your machine. Don't forget to configure the .env file in the root of the project.
+
 ## API Endpoints
 
 **Test**
@@ -50,20 +52,25 @@
 - POST /logout
 ---
 **User**
-- GET /user
+All following routes are protected by JWT token. You need to be authenticated to access them.
+- GET /user  `Get all users (only for admin or moderator)`
 - GET /user/me
-- GET /user/{:id}
-- PATCH /user/{:id}
-- DELETE /user/{:id}
-- POST /user/{:userId}/role/{:roleId}
-- DELETE /user/{:userId}/role/{:roleId}
+- GET /user/{:id} `Get a user by id (only for admin)`
+- PATCH /user/{:id} `Edit a user by id (only for admin)`
+- POST /user/{:userId}/role/{:roleId} `Add a role to a user (only for admin)`
+- DELETE /user/{:id} `Delete a user by id (only for admin)`
+- DELETE /user/{:userId}/role/{:roleId} `Delete a role to a user (only for admin)`
 ---
 **Product**
-- GET /product
+All following routes are protected by JWT token. You need to be authenticated to access them.
+Product are linked to a user. Only the user who created the product can get, edit or delete it.
+- GET /product `Get all user's products`
+- GET /product/all `Get all products (only for admin)`
 - POST /product
-- GET /product/{:id}
-- PATCH /product/edit/{:id}
-- POST /product/{:id}
+- GET /product/{:id} `Get a product by id(only for the user who created it)`
+- PATCH /product/edit/{:id} `Edit a product by id(only for the user who created it)`
+- POST /product/{:id} `Delete a product by id(only for the user who created it)`
+- DELETE /product/{:id} `Delete a product by id(only for the user who created it)`
 
 I've made a script to generate a crud for a new entity :
 - `npm run generate-crud -- EntityName`

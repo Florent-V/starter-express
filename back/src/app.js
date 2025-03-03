@@ -6,6 +6,7 @@ import cookieSession from 'cookie-session';
 import initDB from './database/init.js';
 import  { errorHandler, notFound, logError } from './middleware/errorMiddleware.js';
 import { send } from './middleware/sendMiddleware.js';
+import { adminRouter } from './admin/admin.js';
 
 import testRoutes from './routes/testRoutes.js';
 import authRoutes from './routes/authRoutes.js';
@@ -45,6 +46,8 @@ app.use(express.static('public/uploads'));
 
 // Test Routes
 app.use('', testRoutes);
+// Admin Panel Route
+app.use('/admin-panel', adminRouter);
 // Auth Routes
 app.use('/api/auth', authRoutes);
 // User Routes
@@ -62,7 +65,10 @@ app.use(errorHandler);
 app.listen(port, async () => {
   console.log(`Serveur démarré sur le port ${port}`);
   try {
-    await initDB('alter');
+    // Replace true by false when sync isn't needed
+    // Replace force by alter to keep data
+    // await initDB(true, 'force');
+    await initDB(true, 'force');
     console.log(`Server is running on port ${port}`);
   } catch (error) {
     console.error('Unable to connect to the database:', error);

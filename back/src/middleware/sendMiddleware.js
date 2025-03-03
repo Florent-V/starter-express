@@ -3,5 +3,5 @@ export const send = (req, res) => {
     res.json(res.data);
   } else {
     res.status(204).send()
-  };
+  }
 }

@@ -20,3 +20,4 @@ export default {
   jwtPrivateKey: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
   jwtPublicKey: process.env.PUBLIC_KEY.replace(/\\n/g, '\n')
 };
+

@@ -1,4 +1,5 @@
 back/node_modules/
+back/.adminjs/
 .idea/
 .vscode/
 package-lock.json

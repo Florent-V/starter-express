@@ -46,6 +46,7 @@ services:
       - MYSQL_DATABASE=${DB_NAME}
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DEFAULT_AUTH=caching_sha2_password
     volumes:
       - mysql_data:/var/lib/mysql
       - db-config:/etc/mysql

@@ -12,9 +12,9 @@
 - [Configuration](#configuration)
 - [How To Setup](#how-to-setup)
 - [API Endpoints](#api-endpoints)
+- [AdminJS](#adminjs)
 - [Docker](#docker)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Configuration
 
@@ -74,6 +74,16 @@ Product are linked to a user. Only the user who created the product can get, edi
 
 I've made a script to generate a crud for a new entity :
 - `npm run generate-crud -- EntityName`
+
+## AdminJS
+
+You can access the AdminJS interface at http://localhost:${API_PORT}/admin-panel to manage your database.
+For now it just a basic implementation to facilitate the development.
+But with a little work you can add more features to use it in production.
+Be carefull access to admin-panel is not protected by JWT token.
+You will have to desactivate it in product or implement a middleware to protect it.
+
+![img.png](img.png)
 
 ## Docker
 
@@ -164,27 +174,10 @@ mysqldump -u<username> -p<password> <database_name> > /path/to/script.sql
 
 ## Contributing
 
-Les contributions sont les bienvenues ! Veuillez suivre les étapes suivantes pour contribuer :
+Contributions are welcome! Please follow these steps to contribute:
 
-1. Forkez le projet.
-2. Créez votre branche de fonctionnalité (`git checkout -b feature/AmazingFeature`).
-3. Commitez vos changements (`git commit -m 'Add some AmazingFeature'`).
-4. Poussez vers la branche (`git push origin feature/AmazingFeature`).
-5. Ouvrez une Pull Request.
-
-## License
-
-Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
-
-
-Redémarrez vos conteneurs avec :
-
-docker-compose down
-docker-compose up --build
-
-
-Lorsque le conteneur MySQL démarrera, il exécutera automatiquement tous les scripts .sql présents dans le dossier /docker-entrypoint-initdb.d (qui correspond à votre dossier sql local) lors de la première initialisation de la base de données.
-
-Quelques points importants à noter :
-
-Cette méthode n'exécutera les scripts que lors de la première initialisation de la base de données. Si vous modifiez le script SQL et que vous voulez le réexécuter, vous devrez supprimer le volume de données MySQL et le recréer :
+1. Fork the project.
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.

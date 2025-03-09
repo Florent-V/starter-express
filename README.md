@@ -83,7 +83,7 @@ But with a little work you can add more features to use it in production.
 Be carefull access to admin-panel is not protected by JWT token.
 You will have to desactivate it in product or implement a middleware to protect it.
 
-![img.png](img.png)
+![img.jpg](img.jpg)
 
 ## Docker
 
